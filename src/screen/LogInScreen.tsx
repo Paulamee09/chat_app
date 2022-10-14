@@ -1,41 +1,44 @@
-import React from 'react'
-import { StyleSheet, View} from 'react-native'
-import {Box, Button, Center, FormControl, Heading, HStack, Input, Link, Text, VStack} from 'native-base'
+import React, { useState } from 'react'
+import { StyleSheet, TextInput, View} from 'react-native'
+import { Button, HStack, Link, Text } from 'native-base'
 import {NavigationContainer} from '@react-navigation/native'
 
 
 
 const styles = StyleSheet.create({
-    box: {
-      marginTop: 25,
+    mainContainer: {
+      height: '100%',
+      paddingHorizontal: 30,
+      paddingTop: 30,
+      backgroundColor: '#fff',
     },
-    topForm: {
-      width: 300,
-      height: 64,
-      borderRadius: 16,
-      borderColor: '#FDDBDDB3',
+    mainHeader: {
+      fontfamily: 'ProximaNova-Bold',
+      fontSize: 24,
+      lineHeight: 30,
+      fontWeight: '700',
+      color: '#080808',
     },
-    topFormText: {
-      fontSize: 16,
-      fontWeight: '400',
-      color: '#8D8D8D',
-      padding:10
-    },
-    bottomForm: {
+    inputContainer: {
       marginTop: 20,
-      width: 300,
-      height: 64,
-      borderRadius: 16,
-      borderColor: '#CB1F2C0F'
     },
-    bottomFormText: {
-      fontSize: 16,
-      fontWeight: '400',
-      color: '#8D8D8D',
-      padding: 10
+    labels: {
+      fontSize: 18,
+      color:'#8D8D8D',
+      marginTop: 5,
+      paddingBottom: 15,
+      lineHeight: 25,
+      fontFamily: 'ProximaNova-Regular'
+    },
+    inputStyle: {
+      borderWidth: 2,
+      borderColor: '#FDDBDDB3',
+      paddingHorizontal: 15,
+      borderRadius: 16,
+      fontFamily: 'ProximaNova-Bold',
+      fontSize: 18,
     },
     button: {
-    // backgroundColor: '#E24E59',
     borderRadius: 16,
     height: 60,
     marginTop: 330,
@@ -48,59 +51,86 @@ const styles = StyleSheet.create({
 })
 
 
-const LogInScreen = ({navigation}) => {
-  return (
-     <Center w='100%'>
-      <Box style={styles.box} >
-        <Heading size='lg' fontWeight='700' color='#080808' _dark={{
-        color: '#080808'
-      }}>
-          Sign In
-        </Heading>
-        {/* <Heading mt='1' _dark={{
-        color: 'warmGray.200'
-      }} color='coolGray.600' fontWeight='medium' size='xs'>
-          Sign in to continue!
-        </Heading> */}
+const isValidObjectField = (obj) => {
+  return Object.values(obj).every(value => value.trim())
+}
 
-        <VStack space={5} mt='6'>
-          <FormControl style={styles.topForm} >
-            <Text style={styles.topFormText}>Email adress</Text>
-            <Input />
-          </FormControl>
-          <FormControl style={styles.bottomForm}>
-            <Text style={styles.bottomFormText}>Password</Text>
-            <Input type='password' />
-            {/* <Link _text={{
-            fontSize: 'xs',
-            fontWeight: '500',
-            color: 'indigo.500'
-          }} alignSelf='flex-end' mt='1'>
-              Forget Password?
-            </Link> */}
-          </FormControl>
-          <Button onPress={()=>navigation.navigate('SignIn')}  style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
+
+const updateError = (error, stateUpdater) => {
+  stateUpdater(error)
+  setTimeout(() => {
+    stateUpdater('')
+  }, 2500);
+}
+
+const LogInScreen = ({navigation}) => {
+  const [userInfo, setUserInfo] = useState({
+    Emailadress: '',
+    Password: '',
+  })
+
+const [error, setError] = useState('')
+
+
+const { Emailadress, Password } = userInfo
+
+
+const handleOnChnageText = (value,fieldName) => {
+    setUserInfo({...userInfo, [fieldName]: value})
+  }
+
+  
+const isValidForm = () => {
+    // Object.values(userInfo).every(value => value.trim())
+    if(!isValidObjectField(userInfo)) return updateError('Required all fields!', setError)
+  }
+
+  return (
+    <View style={styles.mainContainer}>
+      <Text style={styles.mainHeader}>Sign in</Text>
+
+      <View style={styles.inputContainer}>
+      <Text style={styles.labels}>Email adress</Text>
+      <TextInput style={styles.inputStyle}
+      value={Emailadress}
+      onChangeText={(value) => handleOnChnageText(value,'Emailadress')}
+      autoCapitalize= 'none'
+      autoCorrect= {false}
+      />
+      </View>
+
+      <View style={styles.inputContainer}>
+      <Text style={styles.labels}>Password</Text>
+      <TextInput style={styles.inputStyle}
+      onChangeText={(value) => handleOnChnageText(value,'Emailadress')}
+      value={Password}
+      autoCapitalize= 'none'
+      autoCorrect= {false}
+      secureTextEntry= {true}
+      />
+      </View>
+      
+      
+      <Button onPress={()=>navigation.navigate('SignIn')}  style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
             Continue
-          </Button>
-          <HStack mt='6' justifyContent='center'>
-            <Text fontSize='sm' color='coolGray.600' _dark={{
+      </Button>
+      <HStack mt='4' justifyContent='center'>
+            <Text fontSize='md' color='#8D8D8D' _dark={{
             color: 'warmGray.200'
           }}>
               Don't have an account?{' '}
             </Text>
             <Link _text={{
-            color: '#080808',
-            fontWeight: 'medium',
-            fontSize: 'sm'
+           color : 'black',
+            fontWeight: 'bold',
+            fontSize: 'md'
           }} href='#'>
               Register
             </Link>
           </HStack>
-        </VStack>
-      </Box>
-    </Center>
-
+    </View>
   )
 }
 
 export default LogInScreen
+
