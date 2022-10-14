@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, TextInput, View} from 'react-native'
+import React, { useState } from 'react'
+import { Alert, StyleSheet, TextInput, View} from 'react-native'
 import { Button, HStack, Link, Text } from 'native-base'
 import {NavigationContainer} from '@react-navigation/native'
 
@@ -51,14 +51,31 @@ const styles = StyleSheet.create({
 })
 
 
+
 const SignInScreen = ({navigation}) => {
-  return (
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  
+  
+  const submit = () => {
+    if (!email && !password){
+      Alert.alert('Please fill all the fields')
+    }else
+    Alert.alert('Thankyou!')
+    navigation.navigate('SignIn')
+  }
+
+
+   return (
     <View style={styles.mainContainer}>
       <Text style={styles.mainHeader}>Sign up</Text>
 
       <View style={styles.inputContainer}>
       <Text style={styles.labels}>Email adress</Text>
-      <TextInput style={styles.inputStyle}
+      <TextInput 
+      style={styles.inputStyle}
+      value={email}
+      onChangeText= {(email) => setEmail(email)}
       autoCapitalize= 'none'
       autoCorrect= {false}
       />
@@ -66,7 +83,10 @@ const SignInScreen = ({navigation}) => {
 
       <View style={styles.inputContainer}>
       <Text style={styles.labels}>Password</Text>
-      <TextInput style={styles.inputStyle}
+      <TextInput 
+      style={styles.inputStyle}
+      value={password}
+      onChangeText= {(password) => setPassword(password)}
       autoCapitalize= 'none'
       autoCorrect= {false}
       secureTextEntry= {true}
@@ -74,7 +94,9 @@ const SignInScreen = ({navigation}) => {
       </View>
       
       
-      <Button onPress={()=>navigation.navigate('SignIn')}  style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
+      <Button 
+      onPress={(submit)} 
+        style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
             Continue
       </Button>
       <HStack mt='4' justifyContent='center'>
@@ -96,3 +118,4 @@ const SignInScreen = ({navigation}) => {
 }
 
 export default SignInScreen
+

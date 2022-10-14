@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, TextInput, View} from 'react-native'
+import { Alert, StyleSheet, TextInput, View} from 'react-native'
 import { Button, HStack, Link, Text } from 'native-base'
 import {NavigationContainer} from '@react-navigation/native'
 
@@ -51,49 +51,31 @@ const styles = StyleSheet.create({
 })
 
 
-const isValidObjectField = (obj) => {
-  return Object.values(obj).every(value => value.trim())
-}
-
-
-const updateError = (error, stateUpdater) => {
-  stateUpdater(error)
-  setTimeout(() => {
-    stateUpdater('')
-  }, 2500);
-}
 
 const LogInScreen = ({navigation}) => {
-  const [userInfo, setUserInfo] = useState({
-    Emailadress: '',
-    Password: '',
-  })
-
-const [error, setError] = useState('')
-
-
-const { Emailadress, Password } = userInfo
-
-
-const handleOnChnageText = (value,fieldName) => {
-    setUserInfo({...userInfo, [fieldName]: value})
-  }
-
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   
-const isValidForm = () => {
-    // Object.values(userInfo).every(value => value.trim())
-    if(!isValidObjectField(userInfo)) return updateError('Required all fields!', setError)
+  
+  const submit = () => {
+    if (!email && !password){
+      Alert.alert('Please fill all the fields')
+    }else
+    Alert.alert('Thankyou!')
+    navigation.navigate('SignIn')
   }
 
-  return (
+
+   return (
     <View style={styles.mainContainer}>
       <Text style={styles.mainHeader}>Sign in</Text>
 
       <View style={styles.inputContainer}>
       <Text style={styles.labels}>Email adress</Text>
-      <TextInput style={styles.inputStyle}
-      value={Emailadress}
-      onChangeText={(value) => handleOnChnageText(value,'Emailadress')}
+      <TextInput 
+      style={styles.inputStyle}
+      value={email}
+      onChangeText= {(email) => setEmail(email)}
       autoCapitalize= 'none'
       autoCorrect= {false}
       />
@@ -101,9 +83,10 @@ const isValidForm = () => {
 
       <View style={styles.inputContainer}>
       <Text style={styles.labels}>Password</Text>
-      <TextInput style={styles.inputStyle}
-      onChangeText={(value) => handleOnChnageText(value,'Emailadress')}
-      value={Password}
+      <TextInput 
+      style={styles.inputStyle}
+      value={password}
+      onChangeText= {(password) => setPassword(password)}
       autoCapitalize= 'none'
       autoCorrect= {false}
       secureTextEntry= {true}
@@ -111,7 +94,9 @@ const isValidForm = () => {
       </View>
       
       
-      <Button onPress={()=>navigation.navigate('SignIn')}  style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
+      <Button 
+      onPress={(submit)} 
+        style={styles.button} size='md' variant='subtle' colorScheme='secondary'>
             Continue
       </Button>
       <HStack mt='4' justifyContent='center'>
